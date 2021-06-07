@@ -1,0 +1,215 @@
+---
+title: "R Basics"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Historia
+* 'R' es un dialecto libre de 'S'
+  * Sigue la filosofía del *Free Software Foundatiomn*
+    * Libre de Usar
+    * Libre de accesar y modificar el código fuente
+    * Libre de redistribuir
+    * Libre de mejorar y liberar las mejoras
+  
+* Repositorios
+  * CRAN (Comprehensive R Archive Network)
+    * R-base (R oficial)
+    * Otros (ex. ggplot2)
+  * Github
+    * Cualquier usuario
+  
+# Instalación de paquetes
+```{r eval=FALSE}
+# Desde CRAN
+install.packages("paquete") # un paquete
+lista_paquetes = c("paquete1", "paquete2", "paquete3") # varios paquetes
+
+# Desde GitHub
+# Es necesario instalar "devtools" antes
+
+# install.packages("devtools") # si es necesario
+devtools::install_github("usuario/repositorio")
+
+```
+
+# Variables
+
+## Nombres de variables
+  * Caracteres alfanuméricos
+  * Pueden contener "." y "_" 
+  * **NO** pueden empezar con número ni con "." o "_"
+  
+## Estilos
+  * CamelStyle
+  * snake_style
+  * Mi_xed.Sty_le
+  
+## Asignación e valores a variables
+
+* Operadores: *<-* o *=*
+* La flecha es por tradición, hay sus defensores que son odiosos, pero son lo mismo
+```{r eval=FALSE}
+x = 3 
+y <- 3 
+3 -> z
+```
+
+# Operaciones aritméticas básicas
+```{r eval=FALSE}
+# operaciones algeb
+x = 2
+y = 1
+x * y
+x / y
+
+```
+
+# Navegación en rutas de archivos
+```{r eval=FALSE}
+getwd() # imprime el directorio actual
+dir.create(doc) # crea un nuevo directorio
+list.files() # imprime los archivos dentro del directorio
+unlink(doc, recursive = T) # elimina directorio
+
+```
+
+## Funciones útiles
+```{r eval=FALSE}
+ls() # imprime las variables en la memoria
+sessionInfo() # imprime las librerías cargadas
+dir.create() # crea un nuevo directorio
+dir.exists() # checa si existe el directorio
+unlink("x") # elimina el archivo "x"
+unlink("x", recursive=T) # elimina el directorio "x"
+```
+
+# Tipos de datos
+```{r eval=FALSE}
+int   = as.integer(1) 
+float = as.double(1)
+chr   = as.character(1)
+logical = TRUE
+nan = NA
+
+class(int) # imprime el tipo de dato
+```
+
+# Arrays
+* vectores
+* matrices
+* listas
+* data frames
+
+## Vectores (aka atomic vectors)
+* arreglo unidimensional
+* todos sus elementos son de la misma clase
+```{r eval=FALSE}
+# Forma más común
+vector_vacio = c()
+vector_num = c(1:10)
+vector_char = c("a", "b", "c")
+vector_logical = c(TRUE, FALSE, FALSE, TRUE)
+
+# Vector vacío con tipo de dato y longitud predefinida
+len = 10
+vector_num = vector("numeric", length = len)
+vector_char = vector("character", length = len)
+vector_logical = vector("logical", length = len)
+
+
+```
+
+### Indexación / slicing
+```{r eval=FALSE}
+v = vector_num
+v[1] # obtiene el elemento 1
+v[c(1, 10)] # obtiene el elemento 1 y 10 en ese orden
+v[c(1,10)] = 5 # cambia los valores del elemento 1 y 10
+
+```
+
+### 
+¿Cómo tomarías el elemento *9,4,2* del vector *v* en ese orden?
+¿Cambia los elementos *1,3,6* por un *NA*
+
+## Listas (aka generic vectors)
+Arreglos unidimensionales que pueden contener varios tipos de datos
+```{r eval=FALSE}
+l = list(123,"abc")
+
+l = list(c(1:3), c(1:10), matrix(1:20, ncol = 4))
+
+# añadir nombres a las columnas
+l = list(
+  a = c(1:3), 
+  b = c(1:10), 
+  m = matrix(1:20, ncol = 4))
+
+# unlist
+
+```
+
+## Matrices
+Arreglos numéricos con n dimensiones
+```{r eval=FALSE} 
+m = matrix(1:10, ncol = 2)
+```
+
+## Data frame
+Tabla con datos ordenados. Generalmente cada fila es una observación y cada columna es una variable
+
+### Crear un data frame con variables en memoria
+```{r}
+grupo = c(rep("control", times = 3), 
+      rep("experimental", times = 3))
+fenotipo = c(TRUE, FALSE, FALSE, TRUE, TRUE, TRUE)
+
+df = data.frame(grupo, fenotipo)
+head(df)
+
+```
+
+### Abrir un archivo csv como data frame
+```{r eval=FALSE}
+mi_data_frame = data.frame("/ruta/al/archivo/nombre_de_archivo.csv")
+```
+
+### funciones útiles
+```{r eval=FALSE}
+View()
+dim()
+colnames()
+df[]
+df$
+str()
+```
+
+# If...else statement
+
+```{r eval=FALSE}
+x = -1
+if (x > 0 ) {
+  print("positive")
+
+} else if (x < 0){
+  print("negative")
+
+} else {
+  print("cero")
+}
+```
+
+# Loops
+
+## for
+Iteraciones para hacer algo un número definido de veces
+```{r eval=FALSE}
+for (ii in 1:10){
+  print(ii)
+}
+```
+
+
+
