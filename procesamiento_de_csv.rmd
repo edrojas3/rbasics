@@ -15,9 +15,10 @@ output: html_notebook
 
 *Cosas útiles que pensé después*
   * qué pasa cuándo el archivo no es csv
-  * `readcsv` vs `readcsv2`
+  * `read.csv` vs `read.csv2` vs `read.table`
   * eliminar filas y/o columnas de un data frame
   * cambiar nombre de columnas
+  * guardar un data frame como csv o txt
 
 *Pendientes*
   * csv de google trends
@@ -31,7 +32,7 @@ output: html_notebook
   * saber en dónde estamos: `getwd()`
   * movernos a dónde queremos: `setwd()`
   * verificar que están los archivos: `list.files()`
-  * abrirlos `readcsv()`
+  * abrirlos `read.csv()`
   
 ```{r abrir archivo}
 getwd()
