@@ -7,10 +7,21 @@ output: html_notebook
 
 
 **Para la sig sesión:**
+*Dudas que salieron en clase*
+  * ¿Las filas pueden tener nombre?
+  * ¿Cómo le quito la extensión del archivo a un str?
+  * usar `list.files()` para que salga sólo un tipo de archivo
+  * `for` para eliminar filas que tengan 0's en la columna *Length*
 
-  * nombres de filas
-  * quitar extensión de archivo
-  * usar list.files() para que salga sólo un tipo de archivo
+*Cosas útiles que pensé después*
+  * qué pasa cuándo el archivo no es csv
+  * `readcsv` vs `readcsv2`
+  * eliminar filas y/o columnas de un data frame
+  * cambiar nombre de columnas
+
+*Pendientes*
+  * csv de google trends
+  * exploración de los datos
   * hacer funciones  
   * librerías
   * graficar
@@ -60,7 +71,7 @@ Funciones que se pueden usar:
 
   * `strsplit(string, delimiter)`: toma "string" y lo separa de acuerdo a un delimitador definido en "delimiter". 
   * `rep(v, times=n)`: repite el vector *v* n veces
-  * df$colname: accede a la columna *colname* en el dataframe *df*
+  * `df$colname`: accede a la columna *colname* en el dataframe *df*
   
 ```{r}
 # Obtener la información de una variable "string" que tenga el nombre del archivo.

@@ -7,7 +7,7 @@ output:
 
 # Historia
 * 'R' es un dialecto libre de 'S'
-  * Sigue la filosofía del *Free Software Foundatiomn*
+  * Sigue la filosofía del *Free Software Foundation*
     * Libre de Usar
     * Libre de accesar y modificar el código fuente
     * Libre de redistribuir
