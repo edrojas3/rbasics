@@ -1,0 +1,128 @@
+---
+title: "Longitud en función del tiempo"
+output: html_notebook
+---
+
+*Objetivo graficar la longitud del tubo y célula en función del tiempo.* 
+
+
+**Para la sig sesión:**
+
+  * nombres de filas
+  * quitar extensión de archivo
+  * usar list.files() para que salga sólo un tipo de archivo
+  * hacer funciones  
+  * librerías
+  * graficar
+
+# 1. Abrir archivo
+
+  * saber en dónde estamos: `getwd()`
+  * movernos a dónde queremos: `setwd()`
+  * verificar que están los archivos: `list.files()`
+  * abrirlos `readcsv()`
+  
+```{r abrir archivo}
+getwd()
+
+# recuerda que ese sólo es una ruta ejemplo. La tienes que cambiar por la ruta en la que están tus archivos
+setwd("/home/eduardo/Documents/rfiles/RStudio_test/")
+list.files()
+
+df = read.csv("Cells-Tango1IR.csv")
+head(df)
+```
+
+# 2. Exploración del data frame
+
+  * `View(df)`: abre una "visor" para ver los datos.
+  * `str(df)`: estrucura del data frame
+  * `colnames(df)`: nombre de las columnas
+  * `dim(df)`: dimensiones del data frame
+```{r}
+
+```
+
+# 3. Preprocesamiento de los datos
+
+Preparar el data frame con el que se va a hacer el análisis. Los pasos pueden incluir:
+
+  * Eliminación de filas o columnas
+  * Cambio de tipo de datos
+  * Conversión de valores (ex. normalización)
+  * Añadir filas o columnas necesarias
+
+## Añadir tipo de membrana y tipo de muestra
+
+En los archivos de ejemplo, la información no se encuentra en los datos. Se tiene que obtener la del nombre del archivo.
+
+Funciones que se pueden usar:
+
+  * `strsplit(string, delimiter)`: toma "string" y lo separa de acuerdo a un delimitador definido en "delimiter". 
+  * `rep(v, times=n)`: repite el vector *v* n veces
+  * df$colname: accede a la columna *colname* en el dataframe *df*
+  
+```{r}
+# Obtener la información de una variable "string" que tenga el nombre del archivo.
+nombre_archivo = "Cells-Tango1IR.csv"
+nombre_split = unlist(strsplit(nombre_archivo, "-"))
+
+# repetir el string tantas veces cómo número de filas tenga df
+tipo_membrana = rep(nombre_split[1], times=nrow(df))
+muestra = rep(nombre_split[2], times=nrow(df))
+
+# añadir columnas al df
+df$tipo_membrana = tipo_membrana
+df$muestra = muestra
+
+
+colnames(df)
+```
+
+## Quitar datos que no sirven (ie. length == 0)
+Usar una comparación lógica en la columna "Length" y usarla cómo índice del data frame.
+```{r eliminar filas}
+df = df[df$Length > 0,]
+
+head(df)
+```
+
+## Juntar los datos de todos los archivos en un sólo data frame
+
+Hacer un for loop que:
+
+  1. lea los archivos 1 x 1
+  2. obtenga la información que falta (tipo de membrana y muestra)
+  3. elimine la que sobra (length == 0)
+  4. añada los datos a df
+  
+```{r junta archivos}
+setwd("/home/eduardo/Documents/rfiles/RStudio_test/")
+
+# variable con la lista de archivos
+archivos = list.files()
+
+# for loop que comienza desde el segundo archivo
+for (ii in 2:length(archivos)) {
+  
+  # 1. abre archivo y lo guarda en df_x
+  df_x = read.csv(archivos[ii])
+  
+  # 2. obtiene info faltante y la añade
+  nombre_archivo = archivos[ii]
+  nombre_split = unlist(strsplit(nombre_archivo, "-"))
+  tipo_membrana = rep(nombre_split[1], times=nrow(df_x))
+  muestra = rep(nombre_split[2], times=nrow(df_x))
+  df_x$tipo_membrana = tipo_membrana
+  df_x$muestra = muestra
+  
+  # 3. elimina filas que sobran
+  df_x = df_x[df_x$Length > 0,]
+  
+  # 4. junta los data frames en uno solo
+  df = rbind(df, df_x)
+  
+}
+
+dim(df)
+```
