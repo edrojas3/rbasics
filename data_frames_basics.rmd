@@ -1,0 +1,244 @@
+---
+title: "Data frame basics"
+output: html_notebook
+---
+
+*R notebook vs R mark down*
+
+```{r}
+library(dplyr)
+```
+
+# Características
+
+* Tipo especial de listas
+* Datos organizados de manera tabular (ie. tablas)
+* Cada columna puede tener diferente tipo de datos
+* Todas las columnas tienen que tener el mismo número de filas
+
+# Crear un data frame con variables en memoria
+
+  * `data.frame(x, y, z)`: crea un data frame acomodando los valores de *x*, *y*, y *z* en cada columna. 
+  * `rnorm(n)`: obtiene *n* números aleatorios de una distribución normal.
+```{r}
+
+# Crear datos con números aleatorios obtenidos de una distribución normal
+n = 10
+x = rnorm(n)
+y = rnorm(n)
+
+# crear data frame
+df = data.frame(x, y)
+
+df
+```
+
+# Abrir data frame a partir de un archivo
+Las siguientes funciones son sólo variaciones de la misma función: `read.table()`. Difieren en sus parámetros predeterminados, pero en general todas funcionan para abrir un archivo de texto (.csv, .txt, y otros). 
+
+* `read.csv()`: sep = ",", dec = "."
+* `read.csv2()`: sep = ";", dec = ","
+* `read.delim()`: sep = "\t", dec = "."
+
+```{r}
+df = read.csv("file_name.txt", sep = ".")
+```
+
+# Data frame para usar en los ejemplos
+
+R tiene diferentes data frames para prácticar. `mtcars` y `iris` son dos de los más usados. Para ver una lista de todos los data frames ejemplo, corr: `data()`
+
+`data(mtcars)`: carga el dataframe *mtcars* que tiene datos de diferentes características de diferentes tipos de autos.
+
+```{r}
+data(mtcars)
+```
+
+# Visualización básica
+
+* `head()`: ver primeras filas
+* `tail()`: ver últimas filas
+* `colnames()`: ver nombres de columnas
+* `rownames()`: ver nombres de filas
+* `str()`: estructura del data frame
+* `summary()`: estadística descriptiva de cada columna
+
+# Manipulación del data frame
+
+* Recuerda que con *[]* indicas indexación de un array. 
+* Un data frame es un array de 2 dimensiones: filas y columnas
+  * `df[filas, columnas]`: el primer valor o valores indica las filas, el segundo las columnas.
+  * `df[filas,]`: si quieres tomar todas las columnas de una o varias filas, tienes que especificar qué filas quieres. Los valores de las columnas puede quedar vacío, pero tienes que poner la "," para cumplir con el requisito de 2 dimensiones.
+  * `df[,columnas]`: obtiene todas las filas de columnas específicas
+
+## Extraer datos de columnas
+  
+**De mtcars toma todos los valores de las columnas *cyl* y *hp* **
+
+```{r}
+# ver el nombre de las columnas
+colnames(mtcars)
+```
+
+*R-base*
+Las dos sig. opciones son válidas.
+```{r}
+columnas = c("cyl", "hp")
+mtcars[, columnas]
+
+mtcars[, c("cyl", "hp")]
+```
+
+*dplyr*
+```{r}
+select(mtcars, cyl, hp)
+```
+
+## Tomar un rango de columnas 
+**De mtcars, toma todas las columnas desde *hp* hasta *qsec* **
+  * ver `colnames(mtcars)`
+
+*R-base*
+
+ * `match(strings, vector_de_strings)`: busca los *strings* en *vector_de_strings* y te dice qué lugar ocupan.
+```{r}
+# R-base
+hp_idx = match(c("hp", "qsec"), colnames(mtcars))
+col_idx = hp_idx[1]:hp_idx[2]
+mtcars[, col_idx]
+
+```
+
+*dplyr*
+
+* `select(dataframe, columna_inicial:columna_final)`
+```{r}
+select(mtcars, hp:qsec)
+```
+
+**De mtcars quita todas las columnas a partir de *hp* **
+
+*R-base*
+```{r}
+hp_idx = match("hp", colnames(mtcars))
+mtcars[,-(hp_idx:ncol(mtcars))]
+```
+
+*dplyr*
+```{r}
+select(mtcars, -(hp:last_col()) )
+```
+## Filtrar datos
+
+**Extraer la filas en dónde cyl == 8 y disp == 360**
+
+*R-base*
+```{r}
+subset(mtcars, cyl==8 & disp == 360 )
+```
+
+*dplyr*
+```{r}
+filter(mtcars, cyl == 8 & disp == 360)
+```
+
+# Ordenar datos por los valores de una columna
+
+**Ordenar todo el data frame por los valores de hp**
+
+*R-base*
+
+* `order(vector)`: regresa un vector de números enteros en el que 1 índica que en esa posición está el valor mínimo.
+* `order(vector, decreasing = TRUE)`: regresa un vector de números enteros en el que 1 índica que en esa posición está el valor máximo.
+```{r}
+# orden ascendente
+
+## por una columna
+mtcars[order(mtcars$hp),]
+## por múltiples columnas
+mtcars[order(mtcars$cyl, mtcars$hp), ]
+
+# orden descendente
+mtcars[order(mtcars$hp, decreasing=TRUE), ]
+```
+
+*dplyr*
+```{r}
+# orden ascendente
+arrange(mtcars, hp)
+
+# por múltiples columnas
+arrange(mtcars, cyl, hp)
+
+# orden descendente. NOTA: desc() es una función de dplyr
+arrange(mtcars, desc(hp))
+```
+
+# Cambiar nombres de columnas
+
+*R-base*
+```{r}
+# por índice
+colnames(mtcars)[c(2,4)] = c("nuevo_nombre1", "nuevo_nombre2")
+
+# cambiar el nombre de una columna por nombre
+colnames(mtcars)[colnames(mtcars) == "cyl"] = "cylinder"
+
+# cambiar el nombre de más de una columna
+names_idx = match(c("cyl", "hp"), colnames(mtcars))
+colnames(mtcars)[names_idx] = c("cylinder", "horsepower")
+```
+
+*dplyr*
+`rename(df, newname1=oldname1, newname2=oldname2)`
+```{r}
+mtcars_rename = rename(mtcars, cylinder=cyl, horsepower=hp)
+
+print(names(mtcars))
+print(" ")
+names(mtcars_rename)
+```
+# Cambiar nombres de filas
+
+*R-base*
+En dplyr no sé
+```{r}
+
+df = mtcars # copia mtcars en una nueva variable
+
+# cambia sólo las primeras tres filas
+rownames(df)[1:3] = c("fila1", "fila2", "fila3")
+
+# cambia todas las filas
+rownames(df)[1:3] = rownames(mtcars)[1:3] # regresar a valores originals
+new_names = paste("fila", 1:nrow(df), sep="") # crear un vector con los nuevos nombres
+
+rownames(df) = new_names # cambiar nombre
+```
+
+# Transformaciones en los valores de columnas
+
+**Múltiplica la culumna hp x 2 y el resultado lo pone en una nueva columna que se llama hp2**
+
+*R-base*
+```{r}
+mtcars$hp2 = mtcars$hp *2
+```
+
+*dplyr*
+```{r}
+# añade la nueva variable al dataframe
+mtcars_mutated = mutate(mtcars, hp2 = hp *2)
+
+# sólo se queda con la(s) nueva(s) variable(s)
+mtcars_transmuted = transmute(mtcars, hp2 = hp*2)
+```
+
+# Estadística descriptiva por grupo
+
+```{r}
+cyl = group_by(mtcars, cyl)
+summarize(cyl, hp = mean(hp), drat = mean(drat), wt = mean(wt))
+```
+
+

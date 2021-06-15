@@ -5,28 +5,6 @@ output: html_notebook
 
 *Objetivo graficar la longitud del tubo y célula en función del tiempo.* 
 
-
-**Para la sig sesión:**
-*Dudas que salieron en clase*
-  * ¿Las filas pueden tener nombre?
-  * ¿Cómo le quito la extensión del archivo a un str?
-  * usar `list.files()` para que salga sólo un tipo de archivo
-  * `for` para eliminar filas que tengan 0's en la columna *Length*
-
-*Cosas útiles que pensé después*
-  * qué pasa cuándo el archivo no es csv
-  * `read.csv` vs `read.csv2` vs `read.table`
-  * eliminar filas y/o columnas de un data frame
-  * cambiar nombre de columnas
-  * guardar un data frame como csv o txt
-
-*Pendientes*
-  * csv de google trends
-  * exploración de los datos
-  * hacer funciones  
-  * librerías
-  * graficar
-
 # 1. Abrir archivo
 
   * saber en dónde estamos: `getwd()`
@@ -38,7 +16,7 @@ output: html_notebook
 getwd()
 
 # recuerda que ese sólo es una ruta ejemplo. La tienes que cambiar por la ruta en la que están tus archivos
-setwd("/home/eduardo/Documents/rfiles/RStudio_test/")
+setwd("/home/eduardo/Documents/rfiles/rbasics/csv_files")
 list.files()
 
 df = read.csv("Cells-Tango1IR.csv")
@@ -46,14 +24,10 @@ head(df)
 ```
 
 # 2. Exploración del data frame
-
   * `View(df)`: abre una "visor" para ver los datos.
   * `str(df)`: estrucura del data frame
   * `colnames(df)`: nombre de las columnas
   * `dim(df)`: dimensiones del data frame
-```{r}
-
-```
 
 # 3. Preprocesamiento de los datos
 
@@ -109,7 +83,7 @@ Hacer un for loop que:
   4. añada los datos a df
   
 ```{r junta archivos}
-setwd("/home/eduardo/Documents/rfiles/RStudio_test/")
+setwd("/home/eduardo/Documents/rfiles/rbasics/csv_files")
 
 # variable con la lista de archivos
 archivos = list.files()
@@ -138,3 +112,45 @@ for (ii in 2:length(archivos)) {
 
 dim(df)
 ```
+
+```{r}
+library(dplyr)
+```
+
+# Convertir Slice a tiempo (mins)
+*R-base*
+```{r}
+df$Time = df$Slice*2.5
+head(df)
+```
+
+*dplyr*
+```{r}
+df_mutate = mutate(df, Time = Slice*2.5)
+head(df_mutate)
+```
+
+# Graficar length ~ tiempo por condición
+```{r}
+library(ggplot2)
+```
+
+```{r}
+df_cells = df[df$tipo_membrana == "Cells", ]
+df_tube = df[df$tipo_membrana == "Tube", ]
+```
+
+```{r}
+ggplot(df, aes(y = Length, x = Time, color = tipo_membrana)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(ncol=2, ~ muestra) + 
+  labs(title = "Tipo de membrana: basal")
+```
+```{r}
+ggplot(df_tube, aes(y = Length, x = Time, color = muestra)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Tipo de membrana: tube")
+```
+

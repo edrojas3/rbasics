@@ -1,0 +1,58 @@
+---
+title: "Dudas en clase"
+output: html_notebook
+---
+# Quitarle la extensión del archivo a un string con el nombre de un archivo
+  
+```{r}
+file = "archivo.csv"
+# Método 1
+file_split = unlist(strsplit(file, "\\."))[1]
+
+# Método 2
+file_substr = substr(file_split, 1, nchar(file)-4)
+
+# Método 3
+tools::file_path_sans_ext("ABCD.csv")
+```
+  
+* usar `list.files()` para que salga sólo un tipo de archivo
+
+```{r}
+list.files(pattern = "\\.csv")
+```
+
+* `for` para eliminar filas que tengan 0's en la columna *Length*
+
+**CARGAR Cells-Tango1IR.csv** o alguno parecido.
+
+* `Sys.time()`: función para obtener la fecha actual en formato yyyy-mm-dd hr:min:seg:ms
+```{r}
+start_for = Sys.time()
+
+idx=c() # vector vacío
+
+# ir fila por fila evaluando si en esa fila "length" == 0, si se cumple, guardar el número de la fila en el vactor vacío
+for (ii in 1:nrow(df)){ 
+  if(df[ii, "Length"] == 0){
+    idx = c(idx, ii)
+  }
+}
+
+df_for = df[-idx,] # quitar los índices de las filas en el vector idx
+
+end_for = Sys.time()
+
+end_for - start_for # tiempo que tarda el for
+```
+
+* Contrastar usando una operación booleana/lógica
+```{r}
+start_bool = Sys.time()
+
+df_bool = df[df$Length>0,] # operación lógica para quedarse sólo con los valores mayores a 0
+
+end_bool = Sys.time()
+
+end_bool - start_bool
+```
