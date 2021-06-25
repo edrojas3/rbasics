@@ -1,0 +1,90 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+En este ejemplo se utiliza la librería *spotifyr* para comparar la valencia y energía entre las canciones de *Radiohead* y *Kakkmaddafakka*, las bandas favoritas de Eduardo y Daniel respectivamente.
+
+
+Valencia: métrica de 0 a 1 que describe el "sentimiento de positividad" de una canción. Canciones con valencia cercana a 1 suenan más positivas (ej. felices, eufóricas); canciones con valencia cercana a 0 tienen "sentmientos negativos" (ej. tristeza, enojo).
+
+Energía: métrica que va de 0 a 1 y representa una medida de intensidad o actividad percibida. Una canción energética se percibe cómo rápida, ruidosa, y con volúmen alto. El *death metal* es energético, pero un preludio de Bach no lo es. 
+
+# Librerías
+
+Instalar las librerías que necesites
+
+```{r}
+install.packages("spotifyr")
+install.packages("ggExtra")
+```
+
+Cargar las librerías
+```{r}
+library(spotifyr)
+library(ggplot2)
+library(dplyr)
+library(ggExtra)
+```
+
+# Acceso a *spotify for developers*
+
+Utiliza la librería *spotifyr* para acceder a tus datos de spotify y poder utilizar funciones para extraer información. Ver: https://www.rdocumentation.org/packages/spotifyr/versions/2.2.1
+
+1. Crea una cuenta en https://developer.spotify.com. Si tienes cuenta en spotify, puedes entrar con esa cuenta.
+2. Entra al link que dice *Dashboard* que está en la barra negra hasta arriba de la página.
+3. Crea una App dándole click a alguno de los cuadritos que aparecen.
+4. Entra a la App que acabas de crear y de ahí podrás obtener el *client-id* y el *client-secret*.
+5. En el chunk de abajo, pega el *client-id* y el *client-secret* en dónde corresponda.
+
+```{r tokens}
+Sys.setenv(SPOTIFY_CLIENT_ID = '')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = '')
+
+access_token <- get_spotify_access_token()
+```
+
+# Obtener la información de las bandas
+```{r}
+radiohead = get_artist_audio_features("radiohead")
+kmf = get_artist_audio_features("kakkmaddafakka")
+```
+
+# Subset de los datos
+```{r}
+radiohead_sub = select(radiohead,
+                       artist_name,
+                       album_name,
+                       track_name,
+                       valence,
+                       energy)
+
+kmf_sub = select(kmf,
+                 artist_name,
+                 album_name,
+                 track_name,
+                 valence,
+                 energy)
+```
+
+# Combinar data frames
+```{r}
+df = rbind(radiohead_sub, kmf_sub)
+```
+
+# graficar
+```{r}
+sct = ggplot(df, aes(valence,
+                     energy,
+                     color=artist_name)) +
+        geom_point() +
+        scale_color_manual(values=c("#d8b365","#5ab4ac"))+
+        theme(legend.position = "bottom",
+              legend.title = element_blank())
+
+ggMarginal(sct, groupColour=T, groupFill=T)
+
+
+```
+
+

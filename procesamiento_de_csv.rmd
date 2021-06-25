@@ -12,7 +12,7 @@ output: html_notebook
   * verificar que están los archivos: `list.files()`
   * abrirlos `read.csv()`
   
-```{r abrir archivo}
+```{r abrir_archivo}
 getwd()
 
 # recuerda que ese sólo es una ruta ejemplo. La tienes que cambiar por la ruta en la que están tus archivos
@@ -48,7 +48,7 @@ Funciones que se pueden usar:
   * `rep(v, times=n)`: repite el vector *v* n veces
   * `df$colname`: accede a la columna *colname* en el dataframe *df*
   
-```{r}
+```{r añadir_grupos}
 # Obtener la información de una variable "string" que tenga el nombre del archivo.
 nombre_archivo = "Cells-Tango1IR.csv"
 nombre_split = unlist(strsplit(nombre_archivo, "-"))
@@ -67,7 +67,7 @@ colnames(df)
 
 ## Quitar datos que no sirven (ie. length == 0)
 Usar una comparación lógica en la columna "Length" y usarla cómo índice del data frame.
-```{r eliminar filas}
+```{r eliminar_filas}
 df = df[df$Length > 0,]
 
 head(df)
@@ -84,9 +84,9 @@ Hacer un for loop que:
   
 ```{r junta archivos}
 setwd("/home/eduardo/Documents/rfiles/rbasics/csv_files")
-
+getwd()
 # variable con la lista de archivos
-archivos = list.files()
+archivos = list.files("/home/eduardo/Documents/rfiles/rbasics/csv_files", pattern = "\\csv?")
 
 # for loop que comienza desde el segundo archivo
 for (ii in 2:length(archivos)) {
@@ -147,10 +147,5 @@ ggplot(df, aes(y = Length, x = Time, color = tipo_membrana)) +
   facet_wrap(ncol=2, ~ muestra) + 
   labs(title = "Tipo de membrana: basal")
 ```
-```{r}
-ggplot(df_tube, aes(y = Length, x = Time, color = muestra)) +
-  geom_point() +
-  geom_line() +
-  labs(title = "Tipo de membrana: tube")
-```
+
 
